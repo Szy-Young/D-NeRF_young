@@ -1,0 +1,57 @@
+exp_base: ckpt/blender/bouncingballs
+random_seed: 0
+
+# Logging
+wandb:
+  project: dnerf_blender_bouncingballs
+  name: vanilla
+
+# Data
+dataset_type: blender
+dataset_name: bouncingballs
+data_root: /home/ziyang/Desktop/Datasets/nerf_dataset/dnerf/bouncingballs
+#data_root: /media/SSD/ziyang/Datasets/nerf_dataset/dnerf/bouncingballs
+
+# Fourier embedding
+n_freq_point: 10
+n_freq_view: 4
+n_freq_time: 10
+
+# MLP
+n_layer: 8
+n_dim: 256
+use_viewdir: True
+rgb_act: sigmoid
+density_act: relu
+
+two_model_for_fine: False
+train_on_coarse: False
+
+# Ray & point sampling
+use_batching: False
+use_ndc: False
+n_sample_ray: 500
+n_sample_point: 64
+n_sample_point_fine: 128
+perturb: True
+density_noise_std: 0.0
+
+# Rendering
+no_batching: True
+white_bkgd: True
+
+# Training
+n_iters: 800000
+lrate: 0.0005
+lrate_decay: 0.1
+lrate_decay_step: 500000
+
+precrop_iters: 500
+precrop_iters_time: 100000
+precrop_frac: 0.5
+
+val_freq: 2000
+save_freq: 1000
+
+chunk: 4096
+half_res: True
