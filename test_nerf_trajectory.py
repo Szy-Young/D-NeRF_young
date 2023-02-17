@@ -24,7 +24,7 @@ torch.set_default_tensor_type('torch.cuda.FloatTensor')
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('config', type=str, help='Config files')
-    parser.add_argument('--checkpoint', type=int, default=200000, help='Checkpoint (iteration) to load')
+    parser.add_argument('--checkpoint', type=int, default=800000, help='Checkpoint (iteration) to load')
 
     # Read parameters
     args = parser.parse_args()
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     os.makedirs(save_render_base, exist_ok=True)
 
 
-    n_sample_point = 64
+    n_sample_point = 1024   # 64
     track_box_size = 0.05
     track_box_sample = 10
     track_times = torch.linspace(0., 1., steps=10)
@@ -229,36 +229,36 @@ if __name__ == '__main__':
     """
     Visualize 3D point sequence
     """
-    # import time
-    # points_sequence[:, :, [1, 2]] = points_sequence[:, :, [2, 1]]
-    # points_sequence[:, :, 2] *= -1
-    # save_vis_dir = osp.join(save_render_base, 'pc')
-    # os.makedirs(save_vis_dir, exist_ok=True)
-    # for t in range(points_sequence.shape[0]):
-    #     if t == 0:
-    #         pcd = build_colored_pointcloud(points_sequence[t], rgb_color)
-    #         vis = o3d.visualization.Visualizer()
-    #         vis.create_window()
-    #         vis.add_geometry(pcd)
-    #     else:
-    #         pcd_new = build_colored_pointcloud(points_sequence[t], rgb_color)
-    #         pcd.points = pcd_new.points
-    #         pcd.colors = pcd_new.colors
-    #         vis.update_geometry(pcd)
-    #     vis.poll_events()
-    #     vis.update_renderer()
-    #     time.sleep(0.2)
-    #
-    #     save_file = osp.join(save_vis_dir, 'pc_%06d.png'%(t))
-    #     vis.capture_screen_image(save_file)
+    import time
+    points_sequence[:, :, [1, 2]] = points_sequence[:, :, [2, 1]]
+    points_sequence[:, :, 2] *= -1
+    save_vis_dir = osp.join(save_render_base, 'pc')
+    os.makedirs(save_vis_dir, exist_ok=True)
+    for t in range(points_sequence.shape[0]):
+        if t == 0:
+            pcd = build_colored_pointcloud(points_sequence[t], rgb_color)
+            vis = o3d.visualization.Visualizer()
+            vis.create_window()
+            vis.add_geometry(pcd)
+        else:
+            pcd_new = build_colored_pointcloud(points_sequence[t], rgb_color)
+            pcd.points = pcd_new.points
+            pcd.colors = pcd_new.colors
+            vis.update_geometry(pcd)
+        vis.poll_events()
+        vis.update_renderer()
+        time.sleep(0.2)
+
+        save_file = osp.join(save_vis_dir, 'pc_%06d.png'%(t))
+        vis.capture_screen_image(save_file)
 
     """
     Visualize point trajectory
     """
-    save_vis_dir = osp.join(save_render_base, 'flow')
-    os.makedirs(save_vis_dir, exist_ok=True)
-    points_0 = points_sequence[0]
-    for t in range(1, points_sequence.shape[0]):
-        flow = points_sequence[t] - points_0
-        save_file = osp.join(save_vis_dir, 'flow_%06d.png'%(t))
-        visualize_point_flow_plt(points_0, flow, save_file=save_file)
+    # save_vis_dir = osp.join(save_render_base, 'flow')
+    # os.makedirs(save_vis_dir, exist_ok=True)
+    # points_0 = points_sequence[0]
+    # for t in range(1, points_sequence.shape[0]):
+    #     flow = points_sequence[t] - points_0
+    #     save_file = osp.join(save_vis_dir, 'flow_%06d.png'%(t))
+    #     visualize_point_flow_plt(points_0, flow, save_file=save_file)

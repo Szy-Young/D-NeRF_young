@@ -75,7 +75,8 @@ class NeRF(nn.Module):
         #     self.rgb_fc = nn.Linear(n_dim, 3)
 
         # Output activations
-        act_fns = {'sigmoid': lambda x: torch.sigmoid(x),
+        act_fns = {'identity': lambda x: x,
+                   'sigmoid': lambda x: torch.sigmoid(x),
                    'relu': lambda x: F.relu(x),
                    'softplus': lambda x: F.softplus(x),
                    'shifted_softplus': lambda x: F.softplus(x - 1)}
@@ -205,5 +206,6 @@ if __name__ == '__main__':
     point = torch.randn(8, 32, 3)
     view = torch.randn(8, 32, 3)
     time = 0.4 * torch.ones(8, 32, 1)
+    point, view, time = point.reshape(-1, 3), view.reshape(-1, 3), time.reshape(-1, 1)
 
     rgb, density, flow = model(point, view, time)

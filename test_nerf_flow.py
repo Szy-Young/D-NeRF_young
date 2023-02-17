@@ -23,7 +23,7 @@ torch.set_default_tensor_type('torch.cuda.FloatTensor')
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('config', type=str, help='Config files')
-    parser.add_argument('--checkpoint', type=int, default=200000, help='Checkpoint (iteration) to load')
+    parser.add_argument('--checkpoint', type=int, default=800000, help='Checkpoint (iteration) to load')
 
     # Read parameters
     args = parser.parse_args()

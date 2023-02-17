@@ -24,6 +24,42 @@ def build_colored_pointcloud(pc, color):
     return point_cloud
 
 
+lines = [[0, 1], [1, 2], [2, 3], [0, 3],
+         [4, 5], [5, 6], [6, 7], [4, 7],
+         [0, 4], [1, 5], [2, 6], [3, 7]]
+box_colors = [[0, 1, 0] for _ in range(len(lines))]
+
+def build_bbox3d(boxes):
+    """
+    :param boxes: List [(8, 3), ...].
+    """
+    line_sets = []
+    for corner_box in boxes:
+        line_set = o3d.geometry.LineSet()
+        line_set.points = o3d.utility.Vector3dVector(corner_box)
+        line_set.lines = o3d.utility.Vector2iVector(lines)
+        line_set.colors = o3d.utility.Vector3dVector(box_colors)
+        line_sets.append(line_set)
+    return line_sets
+
+def bound_to_box(bounds):
+    """
+    :param bounds: List [(3, 2), ...].
+    """
+    boxes = []
+    for bound in bounds:
+        corner_box = np.array([[bound[0, 0], bound[1, 0], bound[2, 0]],
+                               [bound[0, 1], bound[1, 0], bound[2, 0]],
+                               [bound[0, 1], bound[1, 0], bound[2, 1]],
+                               [bound[0, 0], bound[1, 0], bound[2, 1]],
+                               [bound[0, 0], bound[1, 1], bound[2, 0]],
+                               [bound[0, 1], bound[1, 1], bound[2, 0]],
+                               [bound[0, 1], bound[1, 1], bound[2, 1]],
+                               [bound[0, 0], bound[1, 1], bound[2, 1]]])
+        boxes.append(corner_box)
+    return boxes
+
+
 # def build_point_flow(pc, flow, with_point=False, n_sample_point=None):
 #     """
 #     :param pc: (N, 3).

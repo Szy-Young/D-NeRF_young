@@ -1,16 +1,16 @@
-exp_base: ckpt/blender/mutant
+exp_base: ckpt/blender/mutant_softplus
 random_seed: 0
 
 # Logging
 wandb:
   project: dnerf_blender_mutant
-  name: vanilla
+  name: shifted_softplus
 
 # Data
 dataset_type: blender
 dataset_name: mutant
-data_root: /home/ziyang/Desktop/Datasets/nerf_dataset/dnerf/mutant
-#data_root: /media/SSD/ziyang/Datasets/nerf_dataset/dnerf/mutant
+#data_root: /home/ziyang/Desktop/Datasets/nerf_dataset/dnerf/mutant
+data_root: /media/SSD/ziyang/Datasets/nerf_dataset/dnerf/mutant
 
 # Fourier embedding
 n_freq_point: 10
@@ -22,7 +22,7 @@ n_layer: 8
 n_dim: 256
 use_viewdir: True
 rgb_act: sigmoid
-density_act: relu
+density_act: shifted_softplus
 
 two_model_for_fine: False
 train_on_coarse: False

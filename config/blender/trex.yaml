@@ -26,6 +26,7 @@ density_act: relu
 
 two_model_for_fine: False
 train_on_coarse: False
+zero_canonical: True
 
 # Ray & point sampling
 use_batching: False

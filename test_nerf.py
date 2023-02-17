@@ -141,6 +141,7 @@ if __name__ == '__main__':
                                        point_embedding, view_embedding, time_embedding,
                                        model, model_fine,
                                        fine_sampling=fine_sampling,
+                                       zero_canonical=args.zero_canonical,
                                        density_noise_std=0.0,
                                        white_bkgd=args.white_bkgd)
 
