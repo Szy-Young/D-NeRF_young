@@ -54,5 +54,5 @@ precrop_frac: 0.5
 val_freq: 2000
 save_freq: 1000
 
-chunk: 4096
+chunk_ray: 4096
 half_res: True
