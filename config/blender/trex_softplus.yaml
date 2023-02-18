@@ -9,8 +9,8 @@ wandb:
 # Data
 dataset_type: blender
 dataset_name: trex
-#data_root: /home/ziyang/Desktop/Datasets/nerf_dataset/dnerf/trex
-data_root: /media/SSD/ziyang/Datasets/nerf_dataset/dnerf/trex
+data_root: /home/ziyang/Desktop/Datasets/nerf_dataset/dnerf/trex
+#data_root: /media/SSD/ziyang/Datasets/nerf_dataset/dnerf/trex
 
 # Fourier embedding
 n_freq_point: 10
@@ -55,4 +55,5 @@ val_freq: 2000
 save_freq: 1000
 
 chunk_ray: 4096
+chunk_point: 1000000
 half_res: True
