@@ -235,12 +235,14 @@ if __name__ == '__main__':
             sampled_time = torch.linspace(0., 1., steps=5)
             render_times = torch.cat([cur_time, sampled_time])
             rgb_map_logs, rgb_map_fine_logs = [], []
+            depth_map_logs, depth_map_fine_logs = [], []
 
             for tid, render_time in enumerate(render_times):
                 render_time = render_time.reshape([1])
 
                 # Batchify
                 rgb_map, rgb_map_fine = [], []
+                depth_map, depth_map_fine = [], []
                 for i in range(0, rays_o.shape[0], args.chunk_ray):
                     # Forward
                     with torch.no_grad():
@@ -258,12 +260,16 @@ if __name__ == '__main__':
                                                white_bkgd=args.white_bkgd)
 
                         rgb_map.append(ret_dict['rgb_map'])
+                        depth_map.append(ret_dict['depth_map'])
                         if fine_sampling:
                             rgb_map_fine.append(ret_dict['rgb_map_fine'])
+                            depth_map_fine.append(ret_dict['depth_map_fine'])
 
                 rgb_map = torch.cat(rgb_map, 0).reshape(target.shape)
-                if fine_sampling > 0:
+                depth_map = torch.cat(depth_map, 0).reshape(target.shape[:2])
+                if fine_sampling:
                     rgb_map_fine = torch.cat(rgb_map_fine, 0).reshape(target.shape)
+                    depth_map_fine = torch.cat(depth_map_fine, 0).reshape(target.shape[:2])
 
                 # Add validation logs
                 if tid == 0:
@@ -279,16 +285,26 @@ if __name__ == '__main__':
                                "val_psnr": psnr.item(), "val_psnr_fine": psnr_fine.item()}
                     train_log = train_log | val_log
 
-                # Add rendering visualization logs
-                render_time = render_time[0].cpu().numpy()
-                rgb_map = rgb_map.cpu().numpy().clip(0., 1.)
-                rgb_map = wandb.Image(rgb_map, caption="coarse rendering %f"%(render_time))
-                rgb_map_logs.append(rgb_map)
-                rgb_map_fine = rgb_map_fine.cpu().numpy().clip(0., 1.)
-                rgb_map_fine = wandb.Image(rgb_map_fine, caption="fine rendering %f"%(render_time))
-                rgb_map_fine_logs.append(rgb_map_fine)
+                    # Add rendering visualization logs
+                    render_time = render_time[0].cpu().numpy()
+                    rgb_map = rgb_map.cpu().numpy().clip(0., 1.)
+                    rgb_map = wandb.Image(rgb_map, caption="coarse rendering %f" % (render_time))
+                    rgb_map_logs.append(rgb_map)
+                    depth_map = (depth_map / far).cpu().numpy().clip(0., 1.)
+                    depth_map = (255 * (1. - depth_map)).astype(np.uint8)
+                    depth_map = wandb.Image(depth_map, caption="coarse depth %f" % (render_time))
+                    depth_map_logs.append(depth_map)
+                    if fine_sampling:
+                        rgb_map_fine = rgb_map_fine.cpu().numpy().clip(0., 1.)
+                        rgb_map_fine = wandb.Image(rgb_map_fine, caption="fine rendering %f" % (render_time))
+                        rgb_map_fine_logs.append(rgb_map_fine)
+                        depth_map_fine = (depth_map_fine / far).cpu().numpy().clip(0., 1.)
+                        depth_map_fine = (255 * (1. - depth_map_fine)).astype(np.uint8)
+                        depth_map_fine = wandb.Image(depth_map_fine, caption="fine depth %f" % (render_time))
+                        depth_map_fine_logs.append(depth_map_fine)
 
-            render_log = {'val_img': rgb_map_logs, 'val_img_fine': rgb_map_fine_logs}
+                render_log = {'val_img': rgb_map_logs, 'val_img_fine': rgb_map_fine_logs,
+                              'val_depth': depth_map_logs, 'val_depth_fine': depth_map_fine_logs}
             train_log = train_log | render_log
 
         # Logging

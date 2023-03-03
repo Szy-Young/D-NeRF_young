@@ -9,8 +9,7 @@ wandb:
 # Data
 dataset_type: blender
 dataset_name: mutant
-data_root: /home/ziyang/Desktop/Datasets/nerf_dataset/dnerf/mutant
-#data_root: /media/SSD/ziyang/Datasets/nerf_dataset/dnerf/mutant
+data_root: /media/SSD/ziyang/Datasets_NeRF/nerf_dataset/dnerf/mutant
 
 # Fourier embedding
 n_freq_point: 10
